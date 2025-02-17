@@ -1,0 +1,59 @@
+2. Owner & Manager APIs
+
+// routes/owner.js
+const express = require("express");
+const router = express.Router();
+const { Owner } = require("../models");
+
+// Create Owner
+router.post("/", async (req, res) => {
+    try {
+        const owner = await Owner.create(req.body);
+        res.status(201).json(owner);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get All Owners
+router.get("/", async (req, res) => {
+    try {
+        const owners = await Owner.findAll();
+        res.json(owners);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get Single Owner
+router.get("/:id", async (req, res) => {
+    try {
+        const owner = await Owner.findByPk(req.params.id);
+        if (!owner) return res.status(404).json({ error: "Owner not found" });
+        res.json(owner);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Update Owner
+router.put("/:id", async (req, res) => {
+    try {
+        const owner = await Owner.update(req.body, { where: { id: req.params.id } });
+        res.json(owner);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete Owner
+router.delete("/:id", async (req, res) => {
+    try {
+        await Owner.destroy({ where: { id: req.params.id } });
+        res.json({ message: "Owner deleted" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+module.exports = router;
